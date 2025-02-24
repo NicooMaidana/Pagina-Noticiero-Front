@@ -1,0 +1,13 @@
+body{
+    height: 200vh;
+    font-family: "Open Sans", sans-serif;
+    overflow-x: hidden;
+}
+
+
+@media screen and (max-width: 768px) {
+    main{
+        padding: 10vh 2vw 10vh 2vw;
+
+    }
+}

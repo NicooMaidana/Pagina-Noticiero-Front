@@ -1,0 +1,66 @@
+
+.conteiner{
+    /* height: 100%;
+    width: 100%; */
+    /* border: solid 2px #7e7e7e;
+    border-radius: 10px;
+    border: 50px;
+    padding: 50px; */
+}
+
+/* .contenido{
+    padding: 40px 40px 40px 40px;
+} */
+
+/* .ocultar{
+    border: 50px;
+    padding: 50px;
+} */
+
+/* .dimencion{
+    height: 700px;
+    width: 900px;
+    border-top: 5px;
+    
+} */
+/* .card{
+    padding: auto;
+    height: auto;
+    left: auto;
+} */
+
+.acomodar{
+    margin: 50px;
+    border: 50px;
+    padding: 50px;
+}
+
+.acomodar2{
+    padding: 0 20px 0 20px;
+}
+
+.hola{
+    margin-bottom: 30px;
+    background-color: currentColor;
+}
+
+.box-title{
+    color: black;
+    margin: 0px 0px 8px;
+}
+
+.text-danger{
+    color: #dc3545
+}
+
+
+.esti{
+    min-height: 70px;
+    height: 2px;
+}
+
+.estil{
+    min-height: 70px;
+    height: 2px;
+    display: none;
+}

@@ -1,0 +1,98 @@
+/* Asegúrate de que el contenedor padre tenga una altura definida */
+.container {
+    height: 100%; /* O cualquier altura que necesites para el contenedor padre */
+}
+
+/* Estilos para la tarjeta */
+.card {
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* Ocupa el 100% de la altura del contenedor padre */
+}
+
+/* Estilo para la hora */
+.hora {
+    display: flex;
+    align-items: center;
+    
+}
+
+/* Distribución de la información */
+.card-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: column;
+    flex-grow: 1; /* Permite que el contenido crezca para ocupar el espacio restante */
+}
+
+.temp-text{
+    z-index: 1;
+    margin-top: -50px;
+    font-size: 70px;
+    font-stretch: condensed;
+    letter-spacing: -3px;
+    font-weight: 100;
+    margin-bottom: -8px;
+    
+}
+
+/* Estilos para la imagen del clima */
+.weather-img {
+
+    margin-top: 5px;
+    justify-content: center;
+    align-items: middle;
+    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.40));
+}
+
+/* Información */
+.weather-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Alinea el contenido al inicio */
+    text-align: left;
+}
+
+/* Tamaño de fuente para la hora */
+.weather-info h6 {
+    font-size: 1.25rem; /* Tamaño de fuente para la hora */
+    margin: 0;
+}
+
+.icono{
+    font-size: 1.5rem;
+    color: #626262;
+}
+/* Información adicional */
+.weather-info span {
+    font-weight: bold;
+    font-size: 1.125rem; /* Tamaño de fuente más grande para la información adicional */
+   
+}
+
+.tiempo{
+    font-size: 25px;
+    color: #6b7280;
+    margin-left: 10px;
+    margin-top: -10px;
+}
+
+/* Estadísticas del clima */
+.weather-stats {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Alinea las estadísticas al inicio */
+    
+}
+
+.weather-stats div {
+    display: flex;
+    align-items: center;
+    
+}
+
+.weather-stats span {
+    color: #6b7280;
+    font-size: 1rem; /* Ajusta el tamaño de la fuente para las estadísticas */
+}

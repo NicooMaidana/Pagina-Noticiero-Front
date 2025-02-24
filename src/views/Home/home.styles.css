@@ -1,0 +1,46 @@
+.card-enter {
+  opacity: 0;
+  transform: translateX(-300%);
+}
+
+.card-enter-active {
+  opacity: 1;
+  transform: translateX(0);
+  transition: opacity 300ms, transform 300ms;
+}
+
+.card-exit {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.card-exit-active {
+  opacity: 0;
+  position: absolute;
+  transform: translateX(-300%);
+  transition: opacity 300ms, transform 300ms;
+}
+
+/* Animaciones para desplazamiento de derecha a izquierda */
+.card-right-enter {
+  opacity: 0;
+  transform: translateX(300%);
+}
+
+.card-right-enter-active {
+  opacity: 1;
+  transform: translateX(0);
+  transition: opacity 300ms, transform 300ms;
+}
+
+.card-right-exit {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.card-right-exit-active {
+  opacity: 0;
+  position: absolute;
+  transform: translateX(300%);
+  transition: opacity 300ms, transform 300ms;
+}

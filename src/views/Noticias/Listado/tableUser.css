@@ -1,0 +1,45 @@
+/* .conteinerr{
+    height: 100%;
+    width: 100%;
+    border-radius: 10px;
+    border: solid 1px #363535;
+    margin: 50px;
+
+}
+.f{
+    display: inline;
+} */
+
+
+
+.card-container {
+    width: 97%; /* Ajusta el ancho de la tarjeta */
+    max-width: 100%; /* Tamaño máximo de la tarjeta */
+    margin: 50px auto; /* Agrega margen tanto arriba/abajo como en los costados */
+    padding: 16px;
+}
+
+.title-bar {
+    border-bottom: 2px solid #ccc;
+    padding-bottom: 8px;
+}
+
+.pdf-button {
+    color: #d50000;
+    border-color: #d50000;
+}
+
+.pdf-button:hover {
+    background-color: #d50000;
+    color: white;
+}
+
+.excel-button {
+    color: #00c853;
+    border-color: #00c853;
+}
+
+.excel-button:hover {
+    background-color: #00c853;
+    color: white;
+}

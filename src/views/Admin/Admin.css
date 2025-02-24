@@ -1,0 +1,47 @@
+/* Estilos para la sección de bienvenida */
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: Arial, sans-serif;
+}
+
+.welcome-section {
+    display: flex;
+    align-items: flex-start; /* Alinea el contenido al inicio del contenedor en el eje vertical */
+    justify-content: center; /* Centra el contenido horizontalmente */
+    height: 100vh; /* Ocupa toda la altura del viewport */
+    background-color: #f4f4f4; /* Puedes cambiar el color de fondo si lo deseas */
+    padding: 0; /* Asegúrate de que no haya relleno adicional */
+    box-sizing: border-box; /* Incluye el padding en el tamaño total del elemento */
+}
+
+.welcome-content {
+    text-align: center;
+    margin: 0; /* Elimina cualquier margen alrededor del div */
+}
+
+.welcome-content h1 {
+    font-size: 2.5rem;
+    margin: 0;
+    color: #333; /* Cambia el color del texto si lo prefieres */
+}
+
+.welcome-content p {
+    font-size: 1.5rem;
+    margin: 0.5rem 0 1.5rem;
+    color: #555; /* Cambia el color del texto si lo prefieres */
+}
+
+.welcome-image {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+}
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: Arial, sans-serif;
+}

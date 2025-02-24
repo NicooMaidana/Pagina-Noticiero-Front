@@ -1,0 +1,105 @@
+#noticiaPrincipal {
+    height: 70vh;
+    position: relative;
+    overflow: hidden; /* Para que el pseudo-elemento no se salga del contenedor */
+    margin: 3px;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  #noticiaPrincipal::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: inherit; /* Usar la misma imagen que el card */
+    
+    transition: transform 0.4s ease; /* Transición suave */
+  }
+  
+  #noticiaPrincipal:hover::before {
+    transform: scale(1.05); /* Zoom al background */
+  }
+  
+  
+  #noticiaPrincipal:hover .contenidoNoticiaPrincipal {
+    opacity: 1;
+    transform: translateY(30%);
+    
+  }
+  
+   .Blur{
+    width: 100%;
+    height: 100%;
+    transition: backdrop-filter .4s;
+  }
+  
+  #noticiaPrincipal:hover .Blur{
+    backdrop-filter: blur(2px);
+  }
+  
+  
+  .containerNoticiaPrincipal{
+    overflow: hidden;
+  }
+  
+  .contenidoNoticiaPrincipal{
+    transform: translateY(64.5%);
+    max-height: 70%;
+    z-index: 30;
+    position: absolute;
+    background: rgb(255,255,255);
+    background: linear-gradient(180deg,rgba(0, 0, 0, 0) 0%,  rgba(1, 19, 22, 0.923) 50%);
+    opacity: 1;
+    overflow: hidden;
+  }
+  
+  .contenidoNoticiaPrincipal h2{
+    display: -webkit-box;
+    font: 500;
+    font-size: 28px;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3; /* Limita a 3 líneas */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+    height: calc(3 * 1.2em); /* Ajusta la altura según el número de líneas y el line-height */
+    line-height: 1.2; /* Ajusta el line-height según tu diseño */
+    word-wrap: break-word;
+    word-break: keep-all;
+    text-shadow: 0 0 10px black;
+  }
+  
+  .contenidoNoticiaPrincipal p{
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3; /* Limita a 3 líneas */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+    height: calc(3 * 1.2em); /* Ajusta la altura según el número de líneas y el line-height */
+    line-height: 1.2; /* Ajusta el line-height según tu diseño */
+    word-wrap: break-word;
+    word-break: keep-all;
+    text-shadow: 0 0 10px black;
+  }
+  
+  .contenidoNoticiaPrincipal hr{
+    border: 0;
+    height: 3px;
+    background-color: rgb(191, 191, 191);
+    width: 50%;
+    border-radius: 3px;
+    margin: 20px auto 0 auto;
+  }
+
+  @media screen and (max-width: 1366px) {
+    .contenidoNoticiaPrincipal hr{
+    margin-top: 0;
+    }
+  }
