@@ -1,217 +1,90 @@
-import React, { useState, useEffect, useRef } from "react";
-import "./Navbar.styles.css";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { MdExpandMore, MdPhoneEnabled } from "react-icons/md";
-import { AiOutlineMenu } from "react-icons/ai";
-import { FaArrowUp, FaWhatsapp } from "react-icons/fa";
-import BotonEnlace from "../BotonEnlaces";
+import "./Navbar.styles.css";
+import { IoMdSearch } from "react-icons/io";
+import { CiMenuFries } from "react-icons/ci";
+import DropdownNavbar from "../DropdownNavbar";
+
+const navItems = [
+  { name: "Inicio", path: "/", color: "text-white hover:text-zinc-200" },
+  { name: "Sociales", path: "/Sociales", color: "text-orange-500 hover:text-orange-600" },
+  { name: "Deportes", path: "/Deportes", color: "text-red-700 hover:text-red-800" },
+  { name: "Policiales", path: "/Policiales", color: "text-blue-700 hover:text-blue-800" },
+  { name: "Política", path: "/Politica", color: "text-yellow-400 hover:text-yellow-500" },
+  { name: "Economía", path: "/Economia", color: "text-green-600 hover:text-green-700" },
+  { name: "Salud", path: "/Salud", color: "text-blue-400 hover:text-blue-500" },
+  { name: "Educación", path: "/Educacion", color: "text-purple-700 hover:text-purple-800" },
+  { name: "Guía telefónica", path: "/GuiaTel", color: "text-gray-200" },
+  { name: "Necrológico", path: "/Necrologico", color: "text-gray-200" },
+  { name: "Clima", path: "/Clima", color: "text-gray-200" },
+  { name: "Programas", path: "/Programas", color: "text-gray-200" },
+];
+
+const menuItems = [
+  { to: "/", label: "Inicio", color: "zinc-200" },
+  { to: "/Sociales", label: "Sociales", color: "orange-500" },
+  { to: "/Deportes", label: "Deportes", color: "red-700" },
+  { to: "/Policiales", label: "Policiales", color: "blue-700" },
+  { to: "/Politica", label: "Política", color: "yellow-400" },
+  { to: "/Economia", label: "Economía", color: "green-600" },
+  { to: "/Salud", label: "Salud", color: "blue-400" },
+  { to: "/Educacion", label: "Educación", color: "purple-700" },
+];
+const NavItem = ({ item, onClick, isMobile }) => (
+  <li
+    className={`list-none ${isMobile ? "w-full text-center p-3 bg-gray-800 hover:bg-gray-300 hover:text-gray-800" : "p-2 rounded-md transition-all"} ${item.color} cursor-pointer`}
+  >
+    <Link to={item.path} onClick={onClick}>{item.name}</Link>
+  </li>
+);
 
 const Navbar = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [exitDirection, setExitDirection] = useState("");
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [menuClosing, setMenuClosing] = useState(false);
-  const [moreOpen, setMoreOpen] = useState(false);
-
-  const moreMenuRef = useRef(null);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.innerWidth > 768) {
-        if (window.scrollY > 70) {
-          if (!isScrolled) {
-            setExitDirection("up");
-            setTimeout(() => {
-              setIsScrolled(true);
-              setExitDirection("");
-            }, 300);
-          }
-        } else {
-          if (isScrolled) {
-            setExitDirection("left");
-            setTimeout(() => {
-              setIsScrolled(false);
-              setExitDirection("");
-            }, 300);
-          }
-        }
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, [isScrolled]);
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (moreMenuRef.current && !moreMenuRef.current.contains(event.target)) {
-        setMoreOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
-  const toggleMenu = () => {
-    if (menuOpen) {
-      setMenuClosing(true);
-      setTimeout(() => {
-        setMenuOpen(false);
-        setMenuClosing(false);
-      }, 300);
-    } else {
-      setMenuOpen(true);
-    }
-  };
-
-  const toggleMore = () => setMoreOpen(!moreOpen);
-
-  const handleScrollToTop = () => {
-    window.scrollTo({ top: 0 });
-    setIsScrolled(false);
-  };
-
-  const handleMoreLinkClick = () => {
-    setMoreOpen(false);
-  };
-
-  const handleLinkClick = () => {
-    if (window.innerWidth <= 768) {
-      toggleMenu(); // Cierra el menú
-    }
-  };
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <header>
-      <nav
-        className={`navbar ${isScrolled ? "scroll" : ""} ${
-          exitDirection ? `exiting-${exitDirection}` : ""
-        } ${menuOpen ? "active" : ""} flex`}
-      >
-        <img
-          src="src/assets/img/Boton_EnVivo1_1.png"
-          alt=""
-          className={exitDirection ? `exiting-${exitDirection}` : ""}
+    <header className="relative z-40 flex justify-between items-center text-white py-3 px-8 md:px-32 bg-gray-800 drop-shadow-md">
+      
+      <a href="#">
+        <img src="src/assets/img/Boton_EnVivo1_1.png" alt="Logo" className="w-52" />
+      </a>
+
+      {/* Navegación en pantallas grandes */}
+      <ul className="hidden xl:flex items-center gap-1 text-lg font-medium">
+        {menuItems.map(({ to, label, color }) => (
+          <li key={to} className={`p-2 hover:text-${color} rounded-md transition-all`}>
+            <Link to={to}>{label}</Link>
+            <span className={`block h-1 w-6 rounded-full bg-${color} mx-auto mt-1`}></span>
+          </li>
+        ))}
+        <DropdownNavbar />
+      </ul>
+
+      {/* Buscador */}
+      <div className="relative hidden md:flex items-center justify-center gap-2">
+        <i className="absolute right-3 text-2xl text-gray-800 font-semibold">
+          <IoMdSearch />
+        </i>
+        <input
+          type="text"
+          placeholder="Buscar..."
+          className="py-2 pl-4 rounded-xl border-2 border-blue-300 focus:bg-slate-100 focus:outline-none text-gray-800"
         />
-        <button className="menu-button" onClick={toggleMenu}>
-          <AiOutlineMenu />
-        </button>
-        <div className={`h-full m-auto flex justify-center align-middle`}>
-          <ul
-            className={`flex List__offcanvas ${
-              menuClosing ? "Salida__offcanvas" : ""
-            }`}
-          >
-            <li onClick={handleLinkClick}>
-              <Link to="/">Inicio</Link> <span className="bg-white"></span>
-            </li>
-            <li onClick={handleLinkClick}>
-              <Link to="/Sociales">Sociales</Link>
-              <span className="bg-orange-500"></span>
-            </li>
-            <li onClick={handleLinkClick}>
-              <Link to="/Deportes">Deportes</Link>
-              <span className="bg-red-700"></span>
-            </li>
-            <li onClick={handleLinkClick}>
-              <Link to="/Policiales">Policiales</Link>
-              <span className="bg-blue-700"></span>
-            </li>
-            <li onClick={handleLinkClick}>
-              <Link to="/Politica">Política</Link>
-              <span className="bg-yellow-400"></span>
-            </li>
-            <li onClick={handleLinkClick}>
-              <Link to="/Economia">Economía</Link>
-              <span className="bg-green-600"></span>
-            </li>
-            <li onClick={handleLinkClick}>
-              <Link to="/Salud">Salud</Link>
-              <span className="bg-blue-400"></span>
-            </li>
-            <li onClick={handleLinkClick}>
-              <Link to="/Educacion">Educación</Link>
-              <span className="bg-purple-700"></span>
-            </li>
-            <div className="more-menu" ref={moreMenuRef}>
-              <button onClick={toggleMore}>
-                <div className={`transition ${moreOpen ? "rotate" : ""}`}>
-                  <MdExpandMore />
-                </div>{" "}
-                Más
-              </button>
-              <ul className={`dropdown ${moreOpen ? "open" : ""}`}>
-                <hr />
-                <li
-                  onClick={() => {
-                    handleMoreLinkClick();
-                    handleLinkClick();
-                  }}
-                >
-                  
-                  <Link to="/GuiaTel">Guía Tel.</Link>
-                </li>
-                <hr />
-                <li
-                  onClick={() => {
-                    handleMoreLinkClick();
-                    handleLinkClick();
-                  }}
-                >
-                  <Link to="/Necrologico">Necrológico</Link>
-                </li>
-                <hr />
-                <li
-                  onClick={() => {
-                    handleMoreLinkClick();
-                    handleLinkClick();
-                  }}
-                >
-                  <Link to="/Clima">Clima</Link>
-                </li>
-                <hr />
-                <li
-                  onClick={() => {
-                    handleMoreLinkClick();
-                    handleLinkClick();
-                  }}
-                >
-                  <Link to="/Programas">Programas</Link>
-                </li>
-              </ul>
-            </div>
-          </ul>
-        </div>
-      </nav>
-      <div className="fixed right-2 bottom-8" style={{ zIndex: 999 }}>
-        <button
-          className={`up-button ${isScrolled ? "up-button-scroll" : ""}`}
-          onClick={handleScrollToTop}
-        >
-          <FaArrowUp />
-        </button>
-
-        <BotonEnlace color="bg-[#fcdce1]" titulo={"EnVivo"} enlace="/EnVivo">
-          <img src="src/assets/img/en_vivo.gif" alt="" />
-        </BotonEnlace>
-
-        <BotonEnlace
-          color="bg-[#00bb2d]"
-          titulo={"WhatsApp"}
-          enlace={
-            "https://api.whatsapp.com/send/?phone=5403562411929&text&type=phone_number&app_absent=0"
-          }
-        >
-          <FaWhatsapp />
-        </BotonEnlace>
       </div>
+
+      {/* Botón hamburguesa */}
+      <i
+        className="xl:hidden block text-2xl cursor-pointer font-semibold"
+        onClick={() => setIsMenuOpen(!isMenuOpen)}
+      >
+        <CiMenuFries />
+      </i>
+
+      {/* Menú móvil */}
+      <ul className={`absolute xl:hidden top-20 left-0 w-full bg-white flex flex-col items-center font-semibold text-lg transform transition-all duration-300 ease-in-out ${isMenuOpen ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2"}`}>
+        {navItems.map((item, index) => (
+          <NavItem key={index} item={item} onClick={() => setIsMenuOpen(false)} isMobile />
+        ))}
+      </ul>
     </header>
   );
 };

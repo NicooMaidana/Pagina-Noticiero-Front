@@ -7,7 +7,7 @@ const ScrollToTop = () => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      window.scrollTo(0, 0);
+      window.scrollTo(-10, -10);
     }, 100); // Ajusta el retraso si es necesario
 
     return () => clearTimeout(timer); // Limpia el temporizador en caso de que el componente se desmonte
