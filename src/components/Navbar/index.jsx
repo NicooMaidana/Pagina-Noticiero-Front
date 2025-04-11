@@ -6,14 +6,14 @@ import { CiMenuFries } from "react-icons/ci";
 import DropdownNavbar from "../DropdownNavbar";
 
 const navItems = [
-  { name: "Inicio", path: "/", color: "text-white hover:text-zinc-200" },
-  { name: "Sociales", path: "/Sociales", color: "text-orange-500 hover:text-orange-600" },
-  { name: "Deportes", path: "/Deportes", color: "text-red-700 hover:text-red-800" },
-  { name: "Policiales", path: "/Policiales", color: "text-blue-700 hover:text-blue-800" },
-  { name: "Política", path: "/Politica", color: "text-yellow-400 hover:text-yellow-500" },
-  { name: "Economía", path: "/Economia", color: "text-green-600 hover:text-green-700" },
-  { name: "Salud", path: "/Salud", color: "text-blue-400 hover:text-blue-500" },
-  { name: "Educación", path: "/Educacion", color: "text-purple-700 hover:text-purple-800" },
+  { name: "Inicio", path: "/", color: "hover:text-zinc-200" },
+  { name: "Sociales", path: "/Sociales", color: "hover:text-orange-500" },
+  { name: "Deportes", path: "/Deportes", color: "hover:text-red-700" },
+  { name: "Policiales", path: "/Policiales", color: "hover:text-blue-700" },
+  { name: "Política", path: "/Politica", color: "hover:text-yellow-400" },
+  { name: "Economía", path: "/Economia", color: "hover:text-green-600" },
+  { name: "Salud", path: "/Salud", color: "hover:text-blue-400" },
+  { name: "Educación", path: "/Educacion", color: "hover:text-purple-700" },
   { name: "Guía telefónica", path: "/GuiaTel", color: "text-gray-200" },
   { name: "Necrológico", path: "/Necrologico", color: "text-gray-200" },
   { name: "Clima", path: "/Clima", color: "text-gray-200" },
@@ -21,15 +21,16 @@ const navItems = [
 ];
 
 const menuItems = [
-  { to: "/", label: "Inicio", color: "zinc-200" },
-  { to: "/Sociales", label: "Sociales", color: "orange-500" },
-  { to: "/Deportes", label: "Deportes", color: "red-700" },
-  { to: "/Policiales", label: "Policiales", color: "blue-700" },
-  { to: "/Politica", label: "Política", color: "yellow-400" },
-  { to: "/Economia", label: "Economía", color: "green-600" },
-  { to: "/Salud", label: "Salud", color: "blue-400" },
-  { to: "/Educacion", label: "Educación", color: "purple-700" },
+  { to: "/", label: "Inicio", hover: "hover:text-zinc-200", bar: "bg-zinc-200" },
+  { to: "/Sociales", label: "Sociales", hover: "hover:text-orange-500", bar: "bg-orange-500" },
+  { to: "/Deportes", label: "Deportes", hover: "hover:text-red-700", bar: "bg-red-700" },
+  { to: "/Policiales", label: "Policiales", hover: "hover:text-blue-700", bar: "bg-blue-700" },
+  { to: "/Politica", label: "Política", hover: "hover:text-yellow-400", bar: "bg-yellow-400" },
+  { to: "/Economia", label: "Economía", hover: "hover:text-green-600", bar: "bg-green-600" },
+  { to: "/Salud", label: "Salud", hover: "hover:text-blue-400", bar: "bg-blue-400" },
+  { to: "/Educacion", label: "Educación", hover: "hover:text-purple-700", bar: "bg-purple-700" },
 ];
+
 const NavItem = ({ item, onClick, isMobile }) => (
   <li
     className={`list-none ${isMobile ? "w-full text-center p-3 bg-gray-800 hover:bg-gray-300 hover:text-gray-800" : "p-2 rounded-md transition-all"} ${item.color} cursor-pointer`}
@@ -43,17 +44,16 @@ const Navbar = () => {
 
   return (
     <header className="relative z-40 flex justify-between items-center text-white py-3 px-8 md:px-32 bg-gray-800 drop-shadow-md">
-      
       <a href="#">
         <img src="src/assets/img/Boton_EnVivo1_1.png" alt="Logo" className="w-52" />
       </a>
 
       {/* Navegación en pantallas grandes */}
       <ul className="hidden xl:flex items-center gap-1 text-lg font-medium">
-        {menuItems.map(({ to, label, color }) => (
-          <li key={to} className={`p-2 hover:text-${color} rounded-md transition-all`}>
+        {menuItems.map(({ to, label, hover, bar }) => (
+          <li key={to} className={`p-2 rounded-md transition-all ${hover}`}>
             <Link to={to}>{label}</Link>
-            <span className={`block h-1 w-6 rounded-full bg-${color} mx-auto mt-1`}></span>
+            <span className={`block h-1 w-6 rounded-full mx-auto mt-1 ${bar}`}></span>
           </li>
         ))}
         <DropdownNavbar />
