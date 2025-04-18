@@ -1,9 +1,12 @@
-import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "./Navbar.styles.css";
 import { IoMdSearch } from "react-icons/io";
 import { CiMenuFries } from "react-icons/ci";
-import DropdownNavbar from "../DropdownNavbar";
+import DropdownNavbar from "../Dropdown";
+import { useEffect } from "react";
+import { useState } from "react";
+import { useRef } from "react";
+
 
 const navItems = [
   { name: "Inicio", path: "/", color: "hover:text-zinc-200" },
@@ -31,6 +34,14 @@ const menuItems = [
   { to: "/Educacion", label: "Educación", hover: "hover:text-purple-700", bar: "bg-purple-700" },
 ];
 
+const otrosItems = [
+  { label: "Guía Tel.", path: "/GuiaTel" },
+  { label: "Necrológico", path: "/Necrologico" },
+  { label: "Clima", path: "/Clima" },
+  { label: "Programas", path: "/Programas" },
+];
+
+
 const NavItem = ({ item, onClick, isMobile }) => (
   <li
     className={`list-none ${isMobile ? "w-full text-center p-3 bg-gray-800 hover:bg-gray-300 hover:text-gray-800" : "p-2 rounded-md transition-all"} ${item.color} cursor-pointer`}
@@ -41,9 +52,35 @@ const NavItem = ({ item, onClick, isMobile }) => (
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navbarRef = useRef(null); // Usamos ref para referenciar el navbar
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (navbarRef.current) {
+        if (window.scrollY > 10) {
+          // Si hemos desplazado más de 10 píxeles, agregar sombra y reducir la opacidad
+          navbarRef.current.classList.add("shadow-md", "scroll-active");
+          navbarRef.current.classList.remove("bg-gray-800"); // Eliminar opacidad cuando se hace scroll
+          navbarRef.current.classList.add("bg-gray-800/80"); // Cambiar a un color más opaco (menos transparente)
+        } else {
+          // Si estamos en el inicio, eliminar la sombra y restaurar la opacidad
+          navbarRef.current.classList.remove("shadow-md", "scroll-active");
+          navbarRef.current.classList.remove("bg-gray-800/80");
+          navbarRef.current.classList.add("bg-gray-800"); // Cambiar a un fondo con más transparencia
+        }
+      }
+    };
+
+    // Escuchamos el evento de scroll
+    window.addEventListener("scroll", handleScroll);
+    
+    // Limpiamos el evento cuando el componente se desmonte
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+  
 
   return (
-    <header className="relative z-40 flex justify-between items-center text-white py-3 px-8 md:px-32 bg-gray-800 drop-shadow-md">
+    <header ref={navbarRef} className="sticky top-0 z-40 flex justify-between items-center text-white py-3 px-8 md:px-32 bg-gray-800 transition-all duration-300">
       <a href="#">
         <img src="src/assets/img/Boton_EnVivo1_1.png" alt="Logo" className="w-52" />
       </a>
@@ -56,7 +93,7 @@ const Navbar = () => {
             <span className={`block h-1 w-6 rounded-full mx-auto mt-1 ${bar}`}></span>
           </li>
         ))}
-        <DropdownNavbar />
+        <DropdownNavbar label="Otros" items={otrosItems} />
       </ul>
 
       {/* Buscador */}

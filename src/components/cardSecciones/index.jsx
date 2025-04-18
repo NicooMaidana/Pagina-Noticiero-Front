@@ -46,7 +46,7 @@ const CardSecciones = ({ ...props }) => {
             </p>
             <a href="/NoticiaDetallada">
               <div className="bg-gray-200 hover:bg-gray-300 px-3 py-2 rounded-2xl text-sm font-medium text-gray-700
-             hover:text-gray-800 transition-all">
+              hover:text-gray-800 transition-all">
                 Leer Más
               </div>
             </a>
