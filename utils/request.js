@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_KEY = 'fc1e205c2beefe04393d1ae2a6ea1b3d'; // reemplazá por tu clave de OpenWeatherMap
+const API_KEY = ''; // reemplazá por tu clave de OpenWeatherMap
 const CIUDAD = 'Morteros'; // o cualquier ciudad
 const UNIDADES = 'metric'; // 'metric' para °C, 'imperial' para °F
 

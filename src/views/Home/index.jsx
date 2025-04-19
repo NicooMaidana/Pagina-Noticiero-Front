@@ -442,7 +442,7 @@ const Home = () => {
   const [error, setError] = useState(null);
 
   const ciudad = "Morteros";
-  const API_KEY = "fc1e205c2beefe04393d1ae2a6ea1b3d";
+  const API_KEY = "";
 
   const obtenerDatosClima = async () => {
     try {

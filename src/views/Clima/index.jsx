@@ -18,7 +18,7 @@ const Clima = () => {
   const [horaActual, setHoraActual] = useState(""); // Estado para la hora
 
   const ciudad = "Morteros";
-  const API_KEY = "fc1e205c2beefe04393d1ae2a6ea1b3d";
+  const API_KEY = "";
 
   useEffect(() => {
     // Obtener datos del clima al cargar la página
