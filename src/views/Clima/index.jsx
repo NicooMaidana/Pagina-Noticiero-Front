@@ -1,35 +1,37 @@
 import React, { useEffect, useState } from "react";
 import "./Clima.css";
 import CardClima from "../../components/CardClima";
-import InfoClimaCard from "../../components/CardClimaDetalle";
 import { TbTemperatureSun } from "react-icons/tb";
 import { IoIosTimer, IoIosWater } from "react-icons/io";
 import { FaCompressAlt, FaWind } from "react-icons/fa";
 import EncabezadoSeccion from "../../components/encabezadoSeccion";
 import { FaTemperatureArrowDown, FaTemperatureArrowUp } from "react-icons/fa6";
-import { TiLocationArrow } from "react-icons/ti";
 import { MdOutlineVisibility } from "react-icons/md";
 import { FiSunrise, FiSunset } from "react-icons/fi";
+import { LiaLocationArrowSolid } from "react-icons/lia";
 
 const Clima = () => {
   const [datosClima, setDatosClima] = useState(null);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
-  const [horaActual, setHoraActual] = useState(""); // Estado para la hora
+  const [horaActual, setHoraActual] = useState("");
 
-  const ciudad = "Morteros";
-  const API_KEY = "";
+  const ciudad = "Morteros,AR";
+  const API_KEY = "fc1e205c2beefe04393d1ae2a6ea1b3d";
 
   useEffect(() => {
-    // Obtener datos del clima al cargar la página
     const obtenerDatosClima = async () => {
       try {
         const response = await fetch(
           `https://api.openweathermap.org/data/2.5/weather?q=${ciudad}&appid=${API_KEY}&units=metric&lang=es`
         );
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status} - ${response.statusText}`);
+        }
+
         const data = await response.json();
 
-        // Cálculos y formatos dentro del componente
         const hora =
           new Date().toLocaleTimeString("es-AR", {
             hour: "2-digit",
@@ -44,23 +46,21 @@ const Clima = () => {
         const temperatura_min = data.main.temp_min;
         const temperatura_max = data.main.temp_max;
         const presion = data.main.pressure;
-        const visibilidad = data.visibility / 1000; // en km
+        const visibilidad = data.visibility / 1000;
         const direccionViento = data.wind.deg;
 
-        // Calcular la duración del día (horas de sol)
         const amanecer =
-          new Date(data.sys.sunrise * 1000).toLocaleTimeString("es-AR", {
+          new Date(data.sys.sunrise * 1000).toLocaleTimeString("us-AR", {
             hour: "2-digit",
             minute: "2-digit",
           }) + " hs";
         const atardecer =
-          new Date(data.sys.sunset * 1000).toLocaleTimeString("es-AR", {
+          new Date(data.sys.sunset * 1000).toLocaleTimeString("us-AR", {
             hour: "2-digit",
             minute: "2-digit",
           }) + " hs";
         const largo_dia = calcularHorasSol(data.sys.sunrise, data.sys.sunset);
 
-        // Guardar los datos en el estado
         setDatosClima({
           hora,
           temperatura,
@@ -78,16 +78,21 @@ const Clima = () => {
           atardecer,
           largo_dia,
         });
+
+        
+
         setCargando(false);
       } catch (err) {
-        setError("No se pudo obtener el clima.");
+        console.error("Error al obtener clima:", err);
+        setError(`No se pudo obtener el clima: ${err.message}`);
         setCargando(false);
       }
     };
 
     obtenerDatosClima();
 
-    // Actualizar la hora cada segundo
+    
+
     const intervalo = setInterval(() => {
       setHoraActual(
         new Date().toLocaleTimeString("us-AR", {
@@ -96,11 +101,26 @@ const Clima = () => {
           second: "2-digit",
         }) + " hs"
       );
-    }, 1000); // Actualiza cada segundo
+    }, 1000);
 
-    // Limpiar el intervalo cuando el componente se desmonte
     return () => clearInterval(intervalo);
   }, []);
+
+
+  const convertirDireccionViento = (grados) => {
+    const direcciones = [
+      "N",
+      "NE",
+      "E",
+      "SE",
+      "S",
+      "SO",
+      "O",
+      "NO",
+    ];
+    const indice = Math.round(grados / 45) % 8;
+    return direcciones[indice];
+  };
 
   const calcularHorasSol = (sunrise, sunset) => {
     const duracion = (sunset - sunrise) / 3600;
@@ -113,6 +133,18 @@ const Clima = () => {
 
   const encabezadoData = [{ titulo: "Clima" }];
   const dataDetalle = [
+    {
+      icono: (
+        <LiaLocationArrowSolid 
+          style={{
+            transform: `rotate(${datosClima.direccionViento}deg)`,
+            transition: "transform 0.3s ease-in-out",
+          }}
+        />
+      ),
+      titulo: "Dirección del viento",
+      dato: `${convertirDireccionViento(datosClima.direccionViento)} (${datosClima.direccionViento}°)`,
+    },
     {
       icono: <TbTemperatureSun />,
       titulo: "Sensación térmica",
@@ -137,11 +169,6 @@ const Clima = () => {
       icono: <FaWind />,
       titulo: "Viento",
       dato: `${datosClima.viento_velocidad} m/s`,
-    },
-    {
-      icono: <TiLocationArrow />,
-      titulo: "Dirección del viento",
-      dato: `${datosClima.direccionViento}°`,
     },
     {
       icono: <MdOutlineVisibility />,
@@ -176,10 +203,8 @@ const Clima = () => {
         <EncabezadoSeccion key={index} titulo={data.titulo} />
       ))}
 
-      {/* Contenedor principal */}
       <div className="flex flex-col md:flex-row bg-zinc-500 mx-4 sm:mx-10 lg:mx-20 p-6 rounded-xl gap-6">
-        {/* Clima principal */}
-        <div className="w-full md:w-1/2 flex justify-center items-center">
+        <div className="w-full md:w-1/2 flex justify-center items-center max-w-3xl">
           <CardClima
             dataWeather={{
               hora: horaActual,
@@ -187,17 +212,19 @@ const Clima = () => {
               tiempo: datosClima.pronostico,
               humedad: datosClima.humedad + "%",
               st: datosClima.sensacion_termica + "°C",
-              imgclima: `https://openweathermap.org/img/wn/${datosClima.icono}@2x.png`,
+              imgclima: `https://openweathermap.org/img/wn/${datosClima.icono}@4x.png`,
             }}
           />
         </div>
 
-        {/* Tarjetas clima */}
         <div className="w-full md:w-1/2 flex items-center justify-center">
           <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4 w-full">
             {dataDetalle.map((item, index) => (
-              <div className="bg-zinc-900 text-gray-200 rounded-lg p-4 shadow-md h-24 flex items-center hover:scale-105 transition-transform duration-200">
-                <div className="text-2xl mr-3">{item.icono}</div>
+              <div
+                key={index}
+                className="bg-zinc-900 cursor-default text-gray-200 rounded-lg p-4 shadow-md h-24 flex items-center hover:scale-105 transition-transform duration-200"
+              >
+                <div className="text-3xl mr-3">{item.icono}</div>
                 <div>
                   <h4 className="text-sm font-semibold">{item.titulo}</h4>
                   <p className="text-sm text-gray-400">{item.dato}</p>

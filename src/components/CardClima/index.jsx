@@ -6,8 +6,8 @@ import { Link } from "react-router-dom";
 
 export const CardClima = ({ dataWeather }) => {
   return (
-    <div className="flex h-full w-full justify-center items-center p-5">
-      <div className="bg-zinc-800 text-gray-200 rounded-3xl shadow-md w-full max-w-xl min-h-[250px] p-6 flex flex-col">
+    <div className="flex h-full w-full justify-center items-center p-3">
+      <div className="bg-zinc-800 text-gray-200 rounded-xl shadow-md w-full min-h-[250px] p-6 flex flex-col">
         <div className="flex items-center mb-4">
           <img
             src="src/assets/img/en_vivo.gif"
@@ -23,25 +23,25 @@ export const CardClima = ({ dataWeather }) => {
               <img
                 src={dataWeather.imgclima}
                 alt="clima"
-                className="w-full h-auto object-cover rounded-lg max-w-[160px]"
+                className="w-full h-auto object-cover min-w-[160px]"
               />
             </div>
             <div className="lg:basis-1/2 flex flex-col items-center lg:items-start lg:ml-8 mt-4 lg:mt-0">
-              <h6 className="text-8xl font-normal">{dataWeather.temp}</h6>
-              <span className="text-base text-gray-400">
+              <h6 className="text-8xl font-thin">{dataWeather.temp}</h6>
+              <h5 className=" text-2xl text-gray-400">
                 {dataWeather.tiempo}
-              </span>
+              </h5>
 
               <div className="flex justify-center lg:justify-start items-center mt-5">
                 <IoIosWater className="text-blue-300 text-xl" />
-                <span className="ml-2 text-slate-400 text-base">
+                <span className="ml-2 text-slate-400 text-xl">
                   Humedad: {dataWeather.humedad}
                 </span>
               </div>
 
               <div className="flex justify-center lg:justify-start items-center mt-3">
                 <FaTemperatureQuarter className="text-yellow-500 text-xl" />
-                <span className="ml-2 text-slate-400 text-base">
+                <span className="ml-2 text-slate-400 text-xl">
                   Sensación térmica: {dataWeather.st}
                 </span>
               </div>

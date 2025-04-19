@@ -441,8 +441,8 @@ const Home = () => {
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
 
-  const ciudad = "Morteros";
-  const API_KEY = "";
+  const ciudad = "Morteros,AR";
+  const API_KEY = "fc1e205c2beefe04393d1ae2a6ea1b3d";
 
   const obtenerDatosClima = async () => {
     try {
@@ -452,7 +452,7 @@ const Home = () => {
       const data = await response.json();
 
       const hora =
-        new Date().toLocaleTimeString("es-AR", {
+        new Date().toLocaleTimeString("us-AR", {
           hour: "2-digit",
           minute: "2-digit",
         }) + " hs";
@@ -579,24 +579,26 @@ const Home = () => {
             otrosArticulos={otrosArticulos}
           />
         </div>
-        <div className="mt-3">
+        <div className="mt-3 content-center">
           <BannerPublicidades
             img="src/assets/img/Publicidades/rating9.png"
             href="/TopRating"
           />
+          <div className="max-w-2xl">
           {!cargando && !error && (
-            <CardClima
+            <CardClima 
               dataWeather={{
                 hora: horaActual,
                 temp: datosClima.temperatura + "°C",
                 tiempo: datosClima.pronostico,
                 humedad: datosClima.humedad + "%",
                 st: datosClima.sensacion_termica + "°C",
-                imgclima: `https://openweathermap.org/img/wn/${datosClima.icono}@2x.png`,
+                imgclima: `https://openweathermap.org/img/wn/${datosClima.icono}@4x.png`,
               }}
             />
           )}
           {error && <p>{error}</p>}
+          </div>
         </div>
         <div className="flex flex-col lg:flex-row justify-center mt-3 gap-4">
           <CardSeccionesHome seccion="Sociales" noticias={noticiasSociales} />
