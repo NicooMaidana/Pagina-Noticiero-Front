@@ -11,7 +11,7 @@ import NoticiaPrincipal from "../../components/NoticiaPrincipal";
 import Publicidades from "../../components/BannerPublicidades";
 import BannerPublicidades from "../../components/BannerPublicidades";
 import CardClima from "../../components/CardClima";
-import obtenerDatosClima from '../../../utils/request';
+import obtenerDatosClima from "../../../utils/request";
 
 const Home = () => {
   const noticiaPrincipal = [
@@ -290,26 +290,22 @@ const Home = () => {
     {
       imagen:
         "https://practicas.coopmorteros.coop/public/image_news/0-655cd09cef8e7-6580.jpg",
-      titulo:
-        "Morteros: Recuperaron una bicicleta robada",
+      titulo: "Morteros: Recuperaron una bicicleta robada",
     },
     {
       imagen:
         "https://practicas.coopmorteros.coop/public/image_news/0-655cd09cef8e7-6580.jpg",
-      titulo:
-        "Morteros: Recuperaron una bicicleta robada",
+      titulo: "Morteros: Recuperaron una bicicleta robada",
     },
     {
       imagen:
         "https://practicas.coopmorteros.coop/public/image_news/0-655cd09cef8e7-6580.jpg",
-      titulo:
-        "Morteros: Recuperaron una bicicleta robada",
+      titulo: "Morteros: Recuperaron una bicicleta robada",
     },
     {
       imagen:
         "https://practicas.coopmorteros.coop/public/image_news/0-655cd09cef8e7-6580.jpg",
-      titulo:
-        "Morteros: Recuperaron una bicicleta robada",
+      titulo: "Morteros: Recuperaron una bicicleta robada",
     },
   ];
 
@@ -317,28 +313,24 @@ const Home = () => {
     {
       imagen:
         "https://practicas.coopmorteros.coop/public/image_news/656620a2b0435.jpg",
-      titulo:
-        "Balojate 2023 en Morteros",
+      titulo: "Balojate 2023 en Morteros",
     },
     {
       imagen:
         "https://practicas.coopmorteros.coop/public/image_news/656620a2b0435.jpg",
-      titulo:
-        "Balojate 2023 en Morteros",
+      titulo: "Balojate 2023 en Morteros",
     },
     {
       imagen:
         "https://practicas.coopmorteros.coop/public/image_news/656620a2b0435.jpg",
-      titulo:
-        "Balojate 2023 en Morteros",
+      titulo: "Balojate 2023 en Morteros",
     },
     {
       imagen:
         "https://practicas.coopmorteros.coop/public/image_news/656620a2b0435.jpg",
-      titulo:
-        "Balojate 2023 en Morteros",
+      titulo: "Balojate 2023 en Morteros",
     },
-  ]
+  ];
 
   const noticiasDeporte = [
     {
@@ -366,7 +358,6 @@ const Home = () => {
         "https://practicas.coopmorteros.coop/public/image_news/0-655c6fb9365ca-6577.jpg",
     },
   ];
-
 
   const noticiasEconomia = [
     {
@@ -445,15 +436,63 @@ const Home = () => {
     },
   ];
 
-  // Obtiene los datos del clima
   const [datosClima, setDatosClima] = useState({});
+  const [horaActual, setHoraActual] = useState("");
+  const [cargando, setCargando] = useState(true);
+  const [error, setError] = useState(null);
+
+  const ciudad = "Morteros";
+  const API_KEY = "fc1e205c2beefe04393d1ae2a6ea1b3d";
+
+  const obtenerDatosClima = async () => {
+    try {
+      const response = await fetch(
+        `https://api.openweathermap.org/data/2.5/weather?q=${ciudad}&appid=${API_KEY}&units=metric&lang=es`
+      );
+      const data = await response.json();
+
+      const hora =
+        new Date().toLocaleTimeString("es-AR", {
+          hour: "2-digit",
+          minute: "2-digit",
+        }) + " hs";
+
+      const temperatura = data.main.temp;
+      const pronostico = data.weather[0].description;
+      const humedad = data.main.humidity;
+      const sensacion_termica = data.main.feels_like;
+      const icono = data.weather[0].icon;
+
+      setDatosClima({
+        hora,
+        temperatura,
+        pronostico,
+        humedad,
+        sensacion_termica,
+        icono,
+      });
+      setCargando(false);
+    } catch (err) {
+      setError("No se pudo obtener el clima.");
+      setCargando(false);
+    }
+  };
 
   useEffect(() => {
-    obtenerDatosClima().then((data) => {
-      setDatosClima(data);
-    });
-  }, []);
+    obtenerDatosClima();
 
+    const intervalo = setInterval(() => {
+      setHoraActual(
+        new Date().toLocaleTimeString("us-AR", {
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+        }) + " hs"
+      );
+    }, 1000);
+
+    return () => clearInterval(intervalo);
+  }, []);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [prevPage, setPrevPage] = useState(1); // Estado para la página anterior
@@ -473,7 +512,6 @@ const Home = () => {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
-
 
   return (
     <>
@@ -542,35 +580,34 @@ const Home = () => {
           />
         </div>
         <div className="mt-3">
-          <BannerPublicidades img="src/assets/img/Publicidades/rating9.png" href="/TopRating" />
-          <CardClima dataWeather={{
-            hora: datosClima.hora,
-            temp: datosClima.temperatura + "°C",
-            tiempo: datosClima.pronostico,
-            humedad: datosClima.humedad + "%",
-            st: datosClima.sensacion_termica + "°C",
-            imgclima: "src/assets/img/Clima/lightning.svg"
-          }} />
+          <BannerPublicidades
+            img="src/assets/img/Publicidades/rating9.png"
+            href="/TopRating"
+          />
+          {!cargando && !error && (
+            <CardClima
+              dataWeather={{
+                hora: horaActual,
+                temp: datosClima.temperatura + "°C",
+                tiempo: datosClima.pronostico,
+                humedad: datosClima.humedad + "%",
+                st: datosClima.sensacion_termica + "°C",
+                imgclima: `https://openweathermap.org/img/wn/${datosClima.icono}@2x.png`,
+              }}
+            />
+          )}
+          {error && <p>{error}</p>}
         </div>
         <div className="flex flex-col lg:flex-row justify-center mt-3 gap-4">
-          <CardSeccionesHome
-            seccion="Sociales"
-            noticias={noticiasSociales}
-          />
-          <CardSeccionesHome
-            seccion="Deportes"
-            noticias={noticiasDeporte}
-          />
+          <CardSeccionesHome seccion="Sociales" noticias={noticiasSociales} />
+          <CardSeccionesHome seccion="Deportes" noticias={noticiasDeporte} />
         </div>
         <div className="flex flex-col lg:flex-row justify-center mt-3 gap-4">
           <CardSeccionesHome
             seccion="Policiales"
             noticias={noticiasPoliciales}
           />
-          <CardSeccionesHome
-            seccion="Política"
-            noticias={noticiasPolitica}
-          />
+          <CardSeccionesHome seccion="Política" noticias={noticiasPolitica} />
         </div>
         <div className="flex flex-col lg:flex-row justify-center m-5 space-y-4 lg:space-y-0">
           <div className="lg:w-1/2 xl:w-1/2 flex justify-center">
@@ -582,19 +619,12 @@ const Home = () => {
         </div>
 
         <div className="flex flex-col lg:flex-row justify-center mt-3 gap-4">
-          <CardSeccionesHome
-            seccion="Economía"
-            noticias={noticiasEconomia}
-          />
-          <CardSeccionesHome
-            seccion="Salud"
-            noticias={noticiasSalud} />
+          <CardSeccionesHome seccion="Economía" noticias={noticiasEconomia} />
+          <CardSeccionesHome seccion="Salud" noticias={noticiasSalud} />
         </div>
         <div className="flex flex-col lg:flex-row justify-center mt-4 gap-4">
           <CardSeccionesHome seccion="Educación" noticias={noticiasEducacion} />
         </div>
-
-
       </div>
     </>
   );

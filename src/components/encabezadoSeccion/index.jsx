@@ -23,7 +23,7 @@ const EncabezadoSeccion = ({ ...props }) => {
       case 'Necrológico':
         return 'bg-black';
       case 'Clima':
-        return 'bg-cyan-200';
+        return 'bg-cyan-400';
       case 'Canal En Vivo':
         return 'bg-red-500';
       default:

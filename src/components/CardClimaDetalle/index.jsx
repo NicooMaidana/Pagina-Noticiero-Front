@@ -1,15 +1,14 @@
 import React from 'react';
-import './CardClimaDetalle.css';
 
 const InfoCard = ({ icono, titulo, dato }) => {
   return (
-    <div className="info-card shadow-md">
-      <div className="info-card-icon">
+    <div className="bg-zinc-800 text-gray-200 rounded-xl p-4 m-3 flex items-center shadow-md w-52 h-20">
+      <div className="text-3xl text-gray-200 drop-shadow-sm">
         {icono}
       </div>
-      <div className="info-card-content">
-        <h3 className="info-card-title">{titulo}</h3>
-        <p className="info-card-data">{dato}</p>
+      <div className="ml-4">
+        <h3 className="text-base font-medium">{titulo}</h3>
+        <p className="text-sm text-gray-400">{dato}</p>
       </div>
     </div>
   );
