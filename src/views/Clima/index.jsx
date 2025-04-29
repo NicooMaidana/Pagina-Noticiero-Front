@@ -15,90 +15,131 @@ const Clima = () => {
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
   const [horaActual, setHoraActual] = useState("");
+  const [ciudad, setCiudad] = useState("");
+  const [fechaActual, setFechaActual] = useState("");
 
-  const ciudad = "Morteros,AR";
   const API_KEY = "fc1e205c2beefe04393d1ae2a6ea1b3d";
 
   useEffect(() => {
-    const obtenerDatosClima = async () => {
-      try {
-        const response = await fetch(
-          `https://api.openweathermap.org/data/2.5/weather?q=${ciudad}&appid=${API_KEY}&units=metric&lang=es`
-        );
+    const obtenerUbicacionYClima = () => {
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
 
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status} - ${response.statusText}`);
+          try {
+            const response = await fetch(
+              `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric&lang=es`
+            );
+
+            if (!response.ok) {
+              throw new Error(
+                `HTTP ${response.status} - ${response.statusText}`
+              );
+            }
+
+            const data = await response.json();
+
+            const formatearFechaCompleta = (fecha) => {
+              const fechaFormateada = fecha.toLocaleDateString("es-ES", {
+                weekday: "long",
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+              });
+              return (
+                fechaFormateada.charAt(0).toUpperCase() +
+                fechaFormateada.slice(1)
+              );
+            };
+
+            const palabraToUpper = (texto) => {
+              return texto.replace(/\b\w/g, (letra) => letra.toUpperCase());
+            };
+
+            const fechaCompleta = new Date();
+            const hora = fechaCompleta.toLocaleTimeString("us-AR", {
+              hour: "2-digit",
+              minute: "2-digit",
+            });
+            const fecha = formatearFechaCompleta(fechaCompleta);
+            setFechaActual(fecha);
+            const temperatura = data.main.temp;
+            const pronostico = palabraToUpper(data.weather[0].description);
+            const humedad = data.main.humidity;
+            const sensacion_termica = data.main.feels_like;
+            const viento_velocidad = data.wind.speed;
+            const icono = data.weather[0].icon;
+            const temperatura_min = data.main.temp_min;
+            const temperatura_max = data.main.temp_max;
+            const presion = data.main.pressure;
+            const visibilidad = data.visibility / 1000;
+            const direccionViento = data.wind.deg;
+
+            const nombreCiudad = data.name;
+            const pais = data.sys.country;
+
+            setCiudad(`${nombreCiudad}, ${pais}`);
+
+            const temperaturaFormateada = temperatura.toFixed(1);
+
+            const amanecer =
+              new Date(data.sys.sunrise * 1000).toLocaleTimeString("us-AR", {
+                hour: "2-digit",
+                minute: "2-digit",
+              }) + " hs";
+            const atardecer =
+              new Date(data.sys.sunset * 1000).toLocaleTimeString("us-AR", {
+                hour: "2-digit",
+                minute: "2-digit",
+              }) + " hs";
+            const largo_dia = calcularHorasSol(
+              data.sys.sunrise,
+              data.sys.sunset
+            );
+
+            setDatosClima({
+              hora,
+              fecha,
+              temperatura,
+              temperaturaFormateada,
+              pronostico,
+              humedad,
+              sensacion_termica,
+              viento_velocidad,
+              direccionViento,
+              temperatura_min,
+              temperatura_max,
+              presion,
+              visibilidad,
+              icono,
+              amanecer,
+              atardecer,
+              largo_dia,
+            });
+
+            setCargando(false);
+          } catch (err) {
+            console.error("Error al obtener clima:", err);
+            setError(`No se pudo obtener el clima: ${err.message}`);
+            setCargando(false);
+          }
+        },
+        (err) => {
+          console.error("No se pudo obtener la ubicación:", err);
+          setError("No se pudo obtener la ubicación del usuario.");
+          setCargando(false);
         }
-
-        const data = await response.json();
-
-        const hora =
-          new Date().toLocaleTimeString("es-AR", {
-            hour: "2-digit",
-            minute: "2-digit",
-          }) + " hs";
-        const temperatura = data.main.temp;
-        const pronostico = data.weather[0].description;
-        const humedad = data.main.humidity;
-        const sensacion_termica = data.main.feels_like;
-        const viento_velocidad = data.wind.speed;
-        const icono = data.weather[0].icon;
-        const temperatura_min = data.main.temp_min;
-        const temperatura_max = data.main.temp_max;
-        const presion = data.main.pressure;
-        const visibilidad = data.visibility / 1000;
-        const direccionViento = data.wind.deg;
-
-        const amanecer =
-          new Date(data.sys.sunrise * 1000).toLocaleTimeString("us-AR", {
-            hour: "2-digit",
-            minute: "2-digit",
-          }) + " hs";
-        const atardecer =
-          new Date(data.sys.sunset * 1000).toLocaleTimeString("us-AR", {
-            hour: "2-digit",
-            minute: "2-digit",
-          }) + " hs";
-        const largo_dia = calcularHorasSol(data.sys.sunrise, data.sys.sunset);
-
-        setDatosClima({
-          hora,
-          temperatura,
-          pronostico,
-          humedad,
-          sensacion_termica,
-          viento_velocidad,
-          direccionViento,
-          temperatura_min,
-          temperatura_max,
-          presion,
-          visibilidad,
-          icono,
-          amanecer,
-          atardecer,
-          largo_dia,
-        });
-
-        
-
-        setCargando(false);
-      } catch (err) {
-        console.error("Error al obtener clima:", err);
-        setError(`No se pudo obtener el clima: ${err.message}`);
-        setCargando(false);
-      }
+      );
     };
 
-    obtenerDatosClima();
-
-    
+    obtenerUbicacionYClima();
 
     const intervalo = setInterval(() => {
       setHoraActual(
         new Date().toLocaleTimeString("us-AR", {
           hour: "2-digit",
           minute: "2-digit",
-          second: "2-digit",
         }) + " hs"
       );
     }, 1000);
@@ -106,18 +147,8 @@ const Clima = () => {
     return () => clearInterval(intervalo);
   }, []);
 
-
   const convertirDireccionViento = (grados) => {
-    const direcciones = [
-      "N",
-      "NE",
-      "E",
-      "SE",
-      "S",
-      "SO",
-      "O",
-      "NO",
-    ];
+    const direcciones = ["N", "NE", "E", "SE", "S", "SO", "O", "NO"];
     const indice = Math.round(grados / 45) % 8;
     return direcciones[indice];
   };
@@ -135,7 +166,7 @@ const Clima = () => {
   const dataDetalle = [
     {
       icono: (
-        <LiaLocationArrowSolid 
+        <LiaLocationArrowSolid
           style={{
             transform: `rotate(${datosClima.direccionViento}deg)`,
             transition: "transform 0.3s ease-in-out",
@@ -143,7 +174,9 @@ const Clima = () => {
         />
       ),
       titulo: "Dirección del viento",
-      dato: `${convertirDireccionViento(datosClima.direccionViento)} (${datosClima.direccionViento}°)`,
+      dato: `${convertirDireccionViento(datosClima.direccionViento)} (${
+        datosClima.direccionViento
+      }°)`,
     },
     {
       icono: <TbTemperatureSun />,
@@ -203,22 +236,28 @@ const Clima = () => {
         <EncabezadoSeccion key={index} titulo={data.titulo} />
       ))}
 
-      <div className="flex flex-col md:flex-row bg-zinc-500 mx-4 sm:mx-10 lg:mx-20 p-6 rounded-xl gap-6">
-        <div className="w-full md:w-1/2 flex justify-center items-center max-w-3xl">
-          <CardClima
-            dataWeather={{
-              hora: horaActual,
-              temp: datosClima.temperatura + "°C",
-              tiempo: datosClima.pronostico,
-              humedad: datosClima.humedad + "%",
-              st: datosClima.sensacion_termica + "°C",
-              imgclima: `https://openweathermap.org/img/wn/${datosClima.icono}@4x.png`,
-            }}
-          />
+      <div className="w-full flex flex-col md:flex-row items-start rounded-md bg-zinc-950 p-4 gap-4">
+        {/* Card del clima */}
+        <div className="w-full md:w-1/2 flex justify-center">
+          <div className="w-full max-w-sm">
+            <CardClima
+              dataWeather={{
+                hora: horaActual,
+                fecha: fechaActual,
+                ciudad: ciudad,
+                temp: datosClima.temperaturaFormateada + "°C",
+                pronostico: datosClima.pronostico,
+                humedad: datosClima.humedad + "%",
+                st: datosClima.sensacion_termica + "°C",
+                imgclima: `src/assets/img/weather_icons/${datosClima.icono}.png`,
+              }}
+            />
+          </div>
         </div>
 
-        <div className="w-full md:w-1/2 flex items-center justify-center">
-          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4 w-full">
+        {/* Datos destacados */}
+        <div className="w-full md:w-1/2 flex justify-center">
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full max-w-3xl">
             {dataDetalle.map((item, index) => (
               <div
                 key={index}

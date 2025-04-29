@@ -86,7 +86,7 @@ const Navbar = () => {
       </a>
 
       {/* Navegación en pantallas grandes */}
-      <ul className="hidden xl:flex items-center gap-1 text-lg font-medium">
+      <ul className="hidden xl:flex items-center gap-1 text-base font-medium">
         {menuItems.map(({ to, label, hover, bar }) => (
           <li key={to} className={`p-2 rounded-md transition-all ${hover}`}>
             <Link to={to}>{label}</Link>

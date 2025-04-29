@@ -436,50 +436,74 @@ const Home = () => {
     },
   ];
 
-  const [datosClima, setDatosClima] = useState({});
-  const [horaActual, setHoraActual] = useState("");
+  const [datosClima, setDatosClima] = useState(null);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
+  const [horaActual, setHoraActual] = useState("");
+  const [ciudad, setCiudad] = useState("");
 
-  const ciudad = "Morteros,AR";
   const API_KEY = "fc1e205c2beefe04393d1ae2a6ea1b3d";
 
-  const obtenerDatosClima = async () => {
-    try {
-      const response = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?q=${ciudad}&appid=${API_KEY}&units=metric&lang=es`
-      );
-      const data = await response.json();
-
-      const hora =
-        new Date().toLocaleTimeString("us-AR", {
-          hour: "2-digit",
-          minute: "2-digit",
-        }) + " hs";
-
-      const temperatura = data.main.temp;
-      const pronostico = data.weather[0].description;
-      const humedad = data.main.humidity;
-      const sensacion_termica = data.main.feels_like;
-      const icono = data.weather[0].icon;
-
-      setDatosClima({
-        hora,
-        temperatura,
-        pronostico,
-        humedad,
-        sensacion_termica,
-        icono,
-      });
-      setCargando(false);
-    } catch (err) {
-      setError("No se pudo obtener el clima.");
-      setCargando(false);
-    }
-  };
-
   useEffect(() => {
-    obtenerDatosClima();
+    const obtenerUbicacionYClima = () => {
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+
+          try {
+            const response = await fetch(
+              `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric&lang=es`
+            );
+
+            if (!response.ok) {
+              throw new Error(`HTTP ${response.status} - ${response.statusText}`);
+            }
+
+            const data = await response.json();
+
+            // Solo guardamos los datos que necesitas en esta vista
+            const hora =
+              new Date().toLocaleTimeString("us-AR", {
+                hour: "2-digit",
+                minute: "2-digit",
+              }) + " hs";
+
+            const temperatura = data.main.temp;
+            const humedad = data.main.humidity;
+            const sensacion_termica = data.main.feels_like;
+            const pronostico = data.weather[0].description;
+            const icono = data.weather[0].icon;
+            
+            const nombreCiudad = data.name;
+
+            setCiudad(nombreCiudad);
+
+            setDatosClima({
+              hora,
+              temperatura,
+              sensacion_termica,
+              humedad,
+              pronostico,
+              icono,
+            });
+
+            setCargando(false);
+          } catch (err) {
+            console.error("Error al obtener clima:", err);
+            setError(`No se pudo obtener el clima: ${err.message}`);
+            setCargando(false);
+          }
+        },
+        (err) => {
+          console.error("No se pudo obtener la ubicación:", err);
+          setError("No se pudo obtener la ubicación del usuario.");
+          setCargando(false);
+        }
+      );
+    };
+
+    obtenerUbicacionYClima();
 
     const intervalo = setInterval(() => {
       setHoraActual(
@@ -493,6 +517,9 @@ const Home = () => {
 
     return () => clearInterval(intervalo);
   }, []);
+
+
+
 
   const [currentPage, setCurrentPage] = useState(1);
   const [prevPage, setPrevPage] = useState(1); // Estado para la página anterior
@@ -588,9 +615,10 @@ const Home = () => {
           {!cargando && !error && (
             <CardClima 
               dataWeather={{
+                ciudad: ciudad,
                 hora: horaActual,
                 temp: datosClima.temperatura + "°C",
-                tiempo: datosClima.pronostico,
+                pronostico: datosClima.pronostico,
                 humedad: datosClima.humedad + "%",
                 st: datosClima.sensacion_termica + "°C",
                 imgclima: `https://openweathermap.org/img/wn/${datosClima.icono}@4x.png`,

@@ -20,7 +20,7 @@ const Dropdown = ({ label = "Menú", items = [] }) => {
       <Menu open={open} handler={setOpen} allowHover>
         <MenuHandler>
           <div className="group p-2 rounded-md transition-all cursor-pointer">
-            <div className="flex items-center justify-center text-lg font-medium group-hover:text-pink-500">
+            <div className="flex items-center justify-center text-base font-medium group-hover:text-pink-500">
               {label} <IoIosArrowDown className="ml-1" />
             </div>
             <span className="block h-1 w-6 rounded-full bg-pink-500 mx-auto mt-1" />
