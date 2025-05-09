@@ -9,6 +9,21 @@ import { FaTemperatureArrowDown, FaTemperatureArrowUp } from "react-icons/fa6";
 import { MdOutlineVisibility } from "react-icons/md";
 import { FiSunrise, FiSunset } from "react-icons/fi";
 import { LiaLocationArrowSolid } from "react-icons/lia";
+import ProximosDias from "../../components/ProximosDias";
+
+const palabraToUpper = (texto) => {
+  return texto.replace(/\b\w/g, (letra) => letra.toUpperCase());
+};
+
+const formatearFechaCompleta = (fecha) => {
+  const fechaFormateada = fecha.toLocaleDateString("es-ES", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+  return fechaFormateada.charAt(0).toUpperCase() + fechaFormateada.slice(1);
+};
 
 const Clima = () => {
   const [datosClima, setDatosClima] = useState(null);
@@ -17,6 +32,7 @@ const Clima = () => {
   const [horaActual, setHoraActual] = useState("");
   const [ciudad, setCiudad] = useState("");
   const [fechaActual, setFechaActual] = useState("");
+  const [proximosDias, setProximosDias] = useState([]);
 
   const API_KEY = "fc1e205c2beefe04393d1ae2a6ea1b3d";
 
@@ -28,34 +44,58 @@ const Clima = () => {
           const lon = position.coords.longitude;
 
           try {
-            const response = await fetch(
-              `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric&lang=es`
+            // PRIMERA llamada: Pronóstico para los próximos días
+            const forecastResponse = await fetch(
+              `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric&lang=es`
             );
 
-            if (!response.ok) {
+            if (!forecastResponse.ok) {
               throw new Error(
-                `HTTP ${response.status} - ${response.statusText}`
+                `Pronóstico HTTP ${forecastResponse.status} - ${forecastResponse.statusText}`
               );
             }
 
-            const data = await response.json();
+            const forecastData = await forecastResponse.json();
 
-            const formatearFechaCompleta = (fecha) => {
-              const fechaFormateada = fecha.toLocaleDateString("es-ES", {
+            const resumenDiario = [];
+            const diasUnicos = new Set();
+
+            for (let item of forecastData.list) {
+              const fecha = new Date(item.dt * 1000);
+              const hora = fecha.getHours();
+              const dia = fecha.toLocaleDateString("es-ES", {
                 weekday: "long",
                 day: "numeric",
                 month: "long",
-                year: "numeric",
               });
-              return (
-                fechaFormateada.charAt(0).toUpperCase() +
-                fechaFormateada.slice(1)
-              );
-            };
 
-            const palabraToUpper = (texto) => {
-              return texto.replace(/\b\w/g, (letra) => letra.toUpperCase());
-            };
+              if (!diasUnicos.has(dia) && hora === 12) {
+                diasUnicos.add(dia);
+                resumenDiario.push({
+                  fecha: dia.charAt(0).toUpperCase() + dia.slice(1),
+                  temp: item.main.temp.toFixed(1),
+                  icono: item.weather[0].icon,
+                  descripcion: palabraToUpper(item.weather[0].description),
+                });
+              }
+
+              if (resumenDiario.length === 5) break;
+            }
+
+            setProximosDias(resumenDiario);
+
+            // SEGUNDA llamada: Clima actual
+            const weatherResponse = await fetch(
+              `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric&lang=es`
+            );
+
+            if (!weatherResponse.ok) {
+              throw new Error(
+                `Clima actual HTTP ${weatherResponse.status} - ${weatherResponse.statusText}`
+              );
+            }
+
+            const data = await weatherResponse.json();
 
             const fechaCompleta = new Date();
             const hora = fechaCompleta.toLocaleTimeString("us-AR", {
@@ -93,10 +133,7 @@ const Clima = () => {
                 hour: "2-digit",
                 minute: "2-digit",
               }) + " hs";
-            const largo_dia = calcularHorasSol(
-              data.sys.sunrise,
-              data.sys.sunset
-            );
+            const largo_dia = calcularHorasSol(data.sys.sunrise, data.sys.sunset);
 
             setDatosClima({
               hora,
@@ -238,7 +275,7 @@ const Clima = () => {
 
       <div className="w-full flex flex-col md:flex-row items-start rounded-md bg-zinc-950 p-4 gap-4">
         {/* Card del clima */}
-        <div className="w-full md:w-1/2 flex justify-center">
+        <div className="w-full md:w-1/2 justify-center">
           <div className="w-full max-w-sm">
             <CardClima
               dataWeather={{
@@ -252,6 +289,24 @@ const Clima = () => {
                 imgclima: `src/assets/img/weather_icons/${datosClima.icono}.png`,
               }}
             />
+          </div>
+          <h3 className="text-gray-200 ps-5 font-semibold text-lg">
+            Próximos 5 Días
+          </h3>
+          <div className="max-w-sm w-full">
+            <ul className="bg-zinc-900 text-gray-200 rounded-xl min-h-[250px] p-6 flex flex-col">
+              {proximosDias.map((dia, index) => (
+                <li key={index}>
+                  <ProximosDias
+                    dataWeather={{
+                      imgclima: `src/assets/img/weather_icons/${dia.icono}.png`,
+                      temp: `${dia.temp}°C`,
+                      fecha: dia.fecha,
+                    }}
+                  />
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
 
